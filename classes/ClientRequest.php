@@ -21,7 +21,7 @@ namespace IpaySecure;
 	private $cardType;
 	private $merchantId;
 	private $transactionkey;
-
+	private $request;
 	function __construct(){
 		$tag = 'ipaysecure';
 		Utils::getLogFile($tag);
@@ -32,11 +32,11 @@ namespace IpaySecure;
 	}
 	 public function payerAuthEnrollService($cardDetails){
 		 	  
-		$request = array();
+		$this->request = array();
 
-		$request['referenceID'] = $cardDetails->referenceID;
-		$request['payerAuthEnrollService_run'] = 'true';
-		$res = makeRequest($cardDetails);
+		$this->request['referenceID'] = $cardDetails->referenceId;
+		$this->request['payerAuthEnrollService_run'] = 'true';
+		$res = self::makeRequest($cardDetails);
 		return $res;
 	}
 
@@ -49,29 +49,29 @@ namespace IpaySecure;
 	}
 	
 	public function makeRequest($cardDetails){
-		self::getCurrency();
+		self::getCurrency($cardDetails);
 
 		$options = [$this->merchantId,$this->transactionkey];
 
-		$request['purchaseTotals_grandTotalAmount']=$cardDetails->OrderDetails->Amount/10
-		$request['card_accountNumber'] = $cardDetails->accountNumber;
-		$request['card_expirationMonth'] = $cardDetails->Account->ExpirationMonth;
-		$request['card_expirationYear'] = $cardDetails->Account->ExpirationYear;
-		$request['purchaseTotals_currency'] =$this->currency;
-		$request['card_cardType']=  $cardDetails->cardType;
-		$request['merchantID'] = $this->merchantId;
-		$request['merchantReferenceCode'] = $cardDetails->OrderDetails->OrderNumber;		
+		$this->request['purchaseTotals_grandTotalAmount']=$cardDetails->OrderDetails->Amount/100;
+		$this->request['card_accountNumber'] = $cardDetails->Account->AccountNumber;
+		$this->request['card_expirationMonth'] = $cardDetails->Account->ExpirationMonth;
+		$this->request['card_expirationYear'] = $cardDetails->Account->ExpirationYear;
+		$this->request['purchaseTotals_currency'] =$this->currency;
+		$this->request['card_cardType']=  $cardDetails->cardType;
+		$this->request['merchantID'] = $this->merchantId;
+		$this->request['merchantReferenceCode'] = $cardDetails->OrderDetails->OrderNumber;		
 
 		$client = new \CybsNameValuePairClient($options);
-		$res = $client->runTransaction($request);
+		$res = $client->runTransaction($this->request);
 		return $res;
 
 	}
-	private function getCurrency(){
+	private function getCurrency($cardDetails){
 		$arr =include('classes/iso_4217_currency_codes.php');
 
 		foreach ($arr as $currency => $code) {
-			 if ($code[1] === $cardDetails->OrderDetails->CurrencyCode){
+			 if ($code[1] ===$cardDetails->OrderDetails->CurrencyCode){
 			 	$this->currency =$currency;
 			 	break;
 			}

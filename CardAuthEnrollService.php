@@ -20,13 +20,16 @@ if(isset($jsonData)){
 	preg_match_all("/ ([^:=]+) [:=]+ ([^\\n]+) /x",  $res, $p);
 	$arr = array_combine($p[1], $p[2]);
 	print_r($arr);
-	if ($arr->payerAuthEnrollReply_reasonCode==475){
+	print_r($arr['payerAuthEnrollReply_reasonCode']);
+
+
+/*	if ($arr[payerAuthEnrollReply_reasonCode]==475){
 			$req->payerAuthValidateService($json);
 	}
 	else{
 
 	}
-
+*/
 	$json = json_encode($arr);
 
 	echo $json;

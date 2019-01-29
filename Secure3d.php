@@ -66,7 +66,6 @@
 
 		}';
 		}
-	
 	$recd_data = json_decode($jsonData);
 	$referenceId = uniqid();
 	$aref = ["referenceId"=>$referenceId];
@@ -124,7 +123,7 @@
 				} else {
 					// Bin profiling failed
 				}
-				card_continue()
+				card_continue();
 				// Bin profiling, if this is the card the end user is paying with you may start the CCA flow at this point
 				//Cardinal.start('cca', myOrderObject);
 			  })
