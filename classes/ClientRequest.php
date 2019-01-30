@@ -44,7 +44,7 @@ namespace IpaySecure;
 		var_dump($cardDetails);
 		$request = array();
 		$request['payerAuthValidateService_authenticationTransactionID'] = this.transactionId;
-		$request['payerAuthValidateSexrvice_run'] = 'true';
+		$request['payerAuthValidateService_run'] = 'true';
 		$res = makeRequest($cardDetails);
 		return $res;
 	}
