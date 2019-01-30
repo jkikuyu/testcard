@@ -16,7 +16,7 @@ $req = new ClientRequest();
 if(isset($jsonData)){
 	//echo $jsonData;
 	$recd_data = json_decode($jsonData);
-	$res = $req->payerAuthEnrollService($recd_data);
+	$res = $req->payerValidateService($recd_data);
 	preg_match_all("/ ([^:=]+) [:=]+ ([^\\n]+) /x",  $res, $p);
 	$keys = array_map('trim',$p[1]);
 	$values = array_map('trim',$p[2]);

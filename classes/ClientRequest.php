@@ -40,7 +40,8 @@ namespace IpaySecure;
 		return $res;
 	}
 
-	public function validateEnrollDetails($cardDetails){
+	public function payerValidateService($cardDetails){
+		var_dump($cardDetails);
 		$request = array();
 		$request['payerAuthValidateService_authenticationTransactionID'] = this.transactionId;
 		$request['payerAuthValidateSexrvice_run'] = 'true';
