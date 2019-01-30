@@ -41,11 +41,10 @@ namespace IpaySecure;
 	}
 
 	public function payerValidateService($cardDetails){
-		var_dump($cardDetails);
-		$request = array();
-		$request['payerAuthValidateService_authenticationTransactionID'] = this.transactionId;
-		$request['payerAuthValidateService_run'] = 'true';
-		$res = makeRequest($cardDetails);
+		$this->request = array();
+		$this->request['payerAuthValidateService_authenticationTransactionID'] = $cardDetails->Payment->ProcessorTransactionId;
+		$this->request['payerAuthValidateService_run'] = 'true';
+		$res = self::makeRequest($cardDetails);
 		return $res;
 	}
 	

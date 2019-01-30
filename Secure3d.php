@@ -119,19 +119,17 @@
 
 	      case "SUCCESS":
 	      		console.log ("dataxxxxxxxxxxxxxx :"+JSON.stringify(vcard));
-	      		var tjson = JSON.parse({"transaction id":transactionId});
-				var result = {
-							purchase,tjson
-						}
+				var result = {...purchase,
+                              ...vcard
+                             };
 				console.log(result);
-			var validObj = fetch("CardValidateService.php", {
+			fetch("CardValidateService.php", {
 				method: "POST", // *GET, POST, PUT, DELETE, etc.
 
 				body: JSON.stringify(result), // body data type must match "Content-Type" header
 			})
 			.then(r =>  r.json())
-			.then(data => 	validComplete(data))
-			.catch(error => console.log(error));
+			.then(data => validComplete(data));
 
 
 		  break;
