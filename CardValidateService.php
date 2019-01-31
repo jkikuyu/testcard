@@ -16,15 +16,29 @@ $req = new ClientRequest();
 if(isset($jsonData)){
 	//echo $jsonData;
 	$recd_data = json_decode($jsonData);
-	$res = $req->payerValidateService($recd_data);
+	$res = $req->payerAuthValidateService($recd_data);
 	preg_match_all("/ ([^:=]+) [:=]+ ([^\\n]+) /x",  $res, $p);
 	$keys = array_map('trim',$p[1]);
 	$values = array_map('trim',$p[2]);
-	$combinedres = array_combine($keys, $values);	
+	$combined = array_combine($keys, $values);
+	
+	if($combined['payerAuthValidateReply_reasonCode'] ==="100"){
+		$res = $req->authorizeOnline($recd_data);
+		$arr =include('classes/reason_codes.php');
 
-	$json = json_encode($combinedres);
+		$reasonCode = substr($res, 11, 3);
+		$mess = "Contact Bank";
+		foreach ($arr as $code => $reason) {
+			 if ($code==$reasonCode){
+			 	$mess =$reason;
+			 	break;
+			}
+		}
 
-	echo $json;
+	}
+
+
+	echo $mess;
 }
 
 /*session_unset();

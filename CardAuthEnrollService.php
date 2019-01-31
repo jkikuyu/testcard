@@ -12,7 +12,7 @@ ini_set('display_errors', 1);
 $jsonData = file_get_contents('php://input');
 //echo $jsonData;
 $req = new ClientRequest();
-
+$json = "";
 if(isset($jsonData)){
 	//echo $jsonData;
 	$recd_data = json_decode($jsonData);
@@ -20,11 +20,16 @@ if(isset($jsonData)){
 	preg_match_all("/ ([^:=]+) [:=]+ ([^\\n]+) /x",  $res, $p);
 	$keys = array_map('trim',$p[1]);
 	$values = array_map('trim',$p[2]);
-	$combinedres = array_combine($keys, $values);	
+	$combined = array_combine($keys, $values);	
+	if ($combined['payerAuthEnrollReply_reasonCode']==="475"){ 
+		$json = json_encode($combined);
+		echo $json;
+	}
+	else{
+		$req->authorizeOnline($recd_data);
+		echo $json;
+	}
 
-	$json = json_encode($combinedres);
-
-	echo $json;
 }
 
 /*session_unset();

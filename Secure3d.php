@@ -45,7 +45,16 @@
 				"OrderChannel":"M",
 				"TransactionId":"'.uniqid().'"
 			},
-			"Consumer":{
+			"Account":{
+				"AccountNumber":"4000000000000002",
+				"CardCode":"366",
+				"ExpirationMonth":"12",
+				"ExpirationYear":"2019"
+			}
+
+
+		}';
+/*				"Consumer":{
 				"Email1":"abc@test.com",
 				"BillingAddress":{
 					"FirstName":"John",
@@ -56,15 +65,7 @@
 					"Phone1":"3234455"
 				}
 			},
-			"Account":{
-				"AccountNumber":"4000000000000002",
-				"CardCode":"366",
-				"ExpirationMonth":"12",
-				"ExpirationYear":"2019"
-			}
-
-
-		}';
+*/
 		}
 	$recd_data = json_decode($jsonData);
 	$referenceId = uniqid();

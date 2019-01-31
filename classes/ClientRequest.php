@@ -8,11 +8,6 @@ namespace IpaySecure;
 
 	class ClientRequest{
 	private $referenceID;
-	private $firstName ;
-	private $lastName;
-	private $street ;
-	private $city;
-	private $email;
 	private $accountNumber;
 	private $expirationMonth;
 	private $expirationYear ;
@@ -28,6 +23,7 @@ namespace IpaySecure;
 
 		$this->merchantId = getenv('MERCHANT_ID');
 		$this->transactionkey = getenv('TRANSACTION_KEY');
+		$this->paymentSolution=getenv('PAYMENTSOLUTION');
 
 	}
 	 public function payerAuthEnrollService($cardDetails){
@@ -36,32 +32,48 @@ namespace IpaySecure;
 
 		$this->request['referenceID'] = $cardDetails->referenceId;
 		$this->request['payerAuthEnrollService_run'] = 'true';
+		$this->request['card_expirationMonth'] = $cardDetails->Account->ExpirationMonth;
+		$this->request['card_expirationYear'] = $cardDetails->Account->ExpirationYear;
+		$this->request['card_cardType']=  $cardDetails->cardType;
+		$this->request['card_accountNumber'] = $cardDetails->Account->AccountNumber;
+
+
 		$res = self::makeRequest($cardDetails);
 		return $res;
 	}
 
-	public function payerValidateService($cardDetails){
+	public function payerAuthValidateService($cardDetails){
 		$this->request = array();
 		$this->request['payerAuthValidateService_authenticationTransactionID'] = $cardDetails->Payment->ProcessorTransactionId;
 		$this->request['payerAuthValidateService_run'] = 'true';
+		$this->request['card_expirationMonth'] = $cardDetails->Account->ExpirationMonth;
+		$this->request['card_expirationYear'] = $cardDetails->Account->ExpirationYear;
+		$this->request['card_cardType']=  $cardDetails->cardType;
+		$this->request['card_accountNumber'] = $cardDetails->Account->AccountNumber;
+
+
 		$res = self::makeRequest($cardDetails);
 		return $res;
 	}
-	
+	public function authorizeOnline($cardDetails){
+		$this->request = array();
+		$this->request['ccAuthService_run'] = 'true';
+		$this->request['paymentSolution']=$this->paymentSolution;
+		$this->request['vc_orderID'] = $cardDetails->OrderDetails->OrderNumber;
+		$res = self::makeRequest($cardDetails);
+
+	return $res;
+	}
+
 	public function makeRequest($cardDetails){
 		self::getCurrency($cardDetails);
 
 		$options = [$this->merchantId,$this->transactionkey];
 
 		$this->request['purchaseTotals_grandTotalAmount']=$cardDetails->OrderDetails->Amount/100;
-		$this->request['card_accountNumber'] = $cardDetails->Account->AccountNumber;
-		$this->request['card_expirationMonth'] = $cardDetails->Account->ExpirationMonth;
-		$this->request['card_expirationYear'] = $cardDetails->Account->ExpirationYear;
 		$this->request['purchaseTotals_currency'] =$this->currency;
-		$this->request['card_cardType']=  $cardDetails->cardType;
 		$this->request['merchantID'] = $this->merchantId;
 		$this->request['merchantReferenceCode'] = $cardDetails->OrderDetails->OrderNumber;		
-
 		$client = new \CybsNameValuePairClient($options);
 		$res = $client->runTransaction($this->request);
 		return $res;
@@ -79,16 +91,5 @@ namespace IpaySecure;
 
 	}
 
-	function validCard($required){
-		foreach ($required as $key => $value) {
-		if (empty($value)) {
-                throw new Exception(strtolower(str_replace('_',' ',$key)) . ' is missing and is a required.');
-            }
-            else{
-            	$this->$key = $value;
-            }
-
-        }
-	}
 }
 ?>
