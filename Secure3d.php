@@ -35,12 +35,12 @@
 	if(!isset($jsonData) || empty($jsonData)){
 		//sample data
 		$jsonData = '{
-			"cardType":"001",
+			"cardType":"002",
 			"street":"Sifa Towers, Lenana Rd",
 			"OrderDetails":{
 				"OrderNumber":"1234567890",
 				"OrderDescription":"test Description", 
-				"Amount":"30000",
+				"Amount":"300",
 				"CurrencyCode":"840",
 				"OrderChannel":"M",
 				"TransactionId":"'.uniqid().'"

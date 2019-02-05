@@ -32,6 +32,7 @@ namespace IpaySecure;
 
 		$this->request['referenceID'] = $cardDetails->referenceId;
 		$this->request['payerAuthEnrollService_run'] = 'true';
+
 		$this->request['card_expirationMonth'] = $cardDetails->Account->ExpirationMonth;
 		$this->request['card_expirationYear'] = $cardDetails->Account->ExpirationYear;
 		$this->request['card_cardType']=  $cardDetails->cardType;
@@ -46,6 +47,10 @@ namespace IpaySecure;
 		$this->request = array();
 		$this->request['payerAuthValidateService_authenticationTransactionID'] = $cardDetails->Payment->ProcessorTransactionId;
 		$this->request['payerAuthValidateService_run'] = 'true';
+		$this->request['ccAuthService_run'] = 'true';
+		$this->request['paymentSolution']=$this->paymentSolution;
+		$this->request['vc_orderID'] = $cardDetails->OrderDetails->OrderNumber;
+
 		$this->request['card_expirationMonth'] = $cardDetails->Account->ExpirationMonth;
 		$this->request['card_expirationYear'] = $cardDetails->Account->ExpirationYear;
 		$this->request['card_cardType']=  $cardDetails->cardType;
@@ -57,7 +62,6 @@ namespace IpaySecure;
 	}
 	public function authorizeOnline($cardDetails){
 		$this->request = array();
-		$this->request['ccAuthService_run'] = 'true';
 		$this->request['paymentSolution']=$this->paymentSolution;
 		$this->request['vc_orderID'] = $cardDetails->OrderDetails->OrderNumber;
 		$res = self::makeRequest($cardDetails);

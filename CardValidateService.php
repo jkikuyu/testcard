@@ -21,8 +21,10 @@ if(isset($jsonData)){
 	$keys = array_map('trim',$p[1]);
 	$values = array_map('trim',$p[2]);
 	$combined = array_combine($keys, $values);
-	
-	if($combined['payerAuthValidateReply_reasonCode'] ==="100"){
+	$json = json_encode($combined);
+	echo $json;
+
+	/*if($combined['payerAuthValidateReply_reasonCode'] ==="100"){
 		$res = $req->authorizeOnline($recd_data);
 		$arr =include('classes/reason_codes.php');
 
@@ -35,10 +37,10 @@ if(isset($jsonData)){
 			}
 		}
 
-	}
+	}*/
 
 
-	echo $mess;
+	//echo $mess;
 }
 
 /*session_unset();
