@@ -4,9 +4,10 @@
 **/
 
 namespace IpaySecure;
-	require_once('vendor/autoload.php');
+require_once('vendor/autoload.php');
+require_once('classes/Utils.php');
 
-	class ClientRequest{
+class ClientRequest{
 	private $referenceID;
 	private $accountNumber;
 	private $expirationMonth;
@@ -45,19 +46,30 @@ namespace IpaySecure;
 
 	public function payerAuthValidateService($cardDetails){
 		$this->request = array();
+
 		$this->request['payerAuthValidateService_authenticationTransactionID'] = $cardDetails->Payment->ProcessorTransactionId;
 		$this->request['payerAuthValidateService_run'] = 'true';
 		$this->request['ccAuthService_run'] = 'true';
-		$this->request['paymentSolution']=$this->paymentSolution;
 		$this->request['vc_orderID'] = $cardDetails->OrderDetails->OrderNumber;
 
 		$this->request['card_expirationMonth'] = $cardDetails->Account->ExpirationMonth;
 		$this->request['card_expirationYear'] = $cardDetails->Account->ExpirationYear;
 		$this->request['card_cardType']=  $cardDetails->cardType;
 		$this->request['card_accountNumber'] = $cardDetails->Account->AccountNumber;
+		$this->request['billTo_firstName'] = $cardDetails->Consumer->BillingAddress->FirstName;
+		$this->request['billTo_lastName']  = $cardDetails->Consumer->BillingAddress->LastName;
+		$this->request['billTo_email'] = $cardDetails->Consumer->Email1;
+		$this->request['billTo_street1']   = $cardDetails->Consumer->BillingAddress->Address1;
+		$this->request['billTo_country'] = $cardDetails->Consumer->BillingAddress->CountryCode;
+
+		$this->request['billTo_city'] 	=  $cardDetails->Consumer->BillingAddress->City;
+		if($cardDetails->cardType=="002"){
+			$this->request['card_cardType'] = $cardDetails->cardType;
+		}
 
 
 		$res = self::makeRequest($cardDetails);
+
 		return $res;
 	}
 	public function authorizeOnline($cardDetails){
@@ -75,11 +87,21 @@ namespace IpaySecure;
 		$options = [$this->merchantId,$this->transactionkey];
 
 		$this->request['purchaseTotals_grandTotalAmount']=$cardDetails->OrderDetails->Amount/100;
-		$this->request['purchaseTotals_currency'] =$this->currency;
+		$this->request['purchaseTotals_currency'] =$cardDetails->OrderDetails->CurrencyCode;
 		$this->request['merchantID'] = $this->merchantId;
 		$this->request['merchantReferenceCode'] = $cardDetails->OrderDetails->OrderNumber;		
 		$client = new \CybsNameValuePairClient($options);
+		 $jsonStr= json_encode($cardDetails);
+		Utils::infoMsg($jsonStr);
+		Utils::infoMsg("\n---------------------------------------------------------\n");
+
 		$res = $client->runTransaction($this->request);
+		$info = $client->__getLastRequest();
+		Utils::infoMsg($info);
+		Utils::infoMsg("response :". $res);
+		Utils::infoMsg("\n---------------------------------------------------------\n");
+
+ 
 		return $res;
 
 	}

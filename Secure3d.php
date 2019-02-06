@@ -2,14 +2,20 @@
 	namespace IpaySecure;
 	use IpaySecure\JWTUtil;
 
-	//use IpaySecure\Utils;
+	use IpaySecure\Utils;
 	require_once('vendor/autoload.php');
 	require_once('classes/JWTUtil.php');
+	require_once('classes/Utils.php');
+
 
 
 	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
 	// log request
+	$request_log_dir = 'request_logs';
+	$tag = 'ipaysecure';
+	Utils::getLogFile($tag);
+
 /*
 	Utils::logger(array_merge(['request_time' => new \DateTime(), 'request_type' => 'php://input'], ['request_data' => json_decode(file_get_contents('php://input'))]), $request_log_dir);	
 */
@@ -29,28 +35,44 @@
 	//use IpaySecure\Secure3d\ClientRequest;
 
 
+
+	$orderNo =  mt_rand(100000, 999999);
 	$jsonData = file_get_contents('php://input');
 	$recd_data = '';
 	//echo $jsonData;
 	if(!isset($jsonData) || empty($jsonData)){
 		//sample data
 		$jsonData = '{
-			"cardType":"002",
+			"cardType":"001",
 			"street":"Sifa Towers, Lenana Rd",
 			"OrderDetails":{
-				"OrderNumber":"1234567890",
+				"OrderNumber":"'.$orderNo. '",
 				"OrderDescription":"test Description", 
 				"Amount":"300",
-				"CurrencyCode":"840",
+				"CurrencyCode":"KES",
 				"OrderChannel":"M",
 				"TransactionId":"'.uniqid().'"
 			},
+			"Consumer":{
+				"Email1":"abc@test.com",
+				"BillingAddress":{
+					"FirstName":"John",
+					"MiddleName":"C",
+					"LastName":"Doe",
+					"Address1":"sdfdfdfddfddf",
+					"City":"Nairobi",
+					"CountryCode":"KE",
+					"Phone1":"3234455"
+				}
+			},
+
 			"Account":{
-				"AccountNumber":"4000000000000002",
+				"AccountNumber":"4000000000000119",
 				"CardCode":"366",
 				"ExpirationMonth":"12",
 				"ExpirationYear":"2019"
 			}
+
 
 
 		}';
@@ -89,6 +111,7 @@
 		//console.log(purchase);
 		var enrollobj = "";
 
+
 		var orderObject = {
 		  Consumer: {
 			Account: {
@@ -122,6 +145,7 @@
 	      		console.log ("dataxxxxxxxxxxxxxx :"+JSON.stringify(vcard));
 				var result = {...purchase,
                               ...vcard
+
                              };
 				console.log(result);
 			fetch("CardValidateService.php", {
@@ -157,7 +181,7 @@
 
 				
 		function bin_process(data){
-			transactionId = data.payerAuthEnrollReply_authenticationTransactionID;
+			//transactionId = data.payerAuthEnrollReply_authenticationTransactionID;
 			Cardinal.trigger("bin.process", purchase.Account.AccountNumber)
 				.then(function(results){
 

@@ -41,7 +41,9 @@ record",
     "247" => "You requested a credit for a capture that was previously voided",
     "250" => "The request was received, but there was a timeout at the payment processor",
     "254" => "Stand-alone credits are not allowed",
-    "256" => "Credit amount exceeds maximum allowed for your CyberSource account"
+    "256" => "Credit amount exceeds maximum allowed for your CyberSource account",
+    "475" =>"The customer is enrolled in payer authentication",
+    "476" => "The customer cannot be authenticated."
 );
 
 ?>

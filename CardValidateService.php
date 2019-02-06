@@ -22,7 +22,21 @@ if(isset($jsonData)){
 	$values = array_map('trim',$p[2]);
 	$combined = array_combine($keys, $values);
 	$json = json_encode($combined);
-	echo $json;
+	
+	//echo $json;
+	$arr =include('classes/reason_codes.php');
+	$pos = strpos($res, 'reasonCode');
+	$pos +=11;
+	$reasonCode = substr($res, $pos, 3);
+	$mess = "Contact your bank";
+	foreach ($arr as $code => $reason) {
+
+		 if ($code==$reasonCode){
+		 	$json = json_encode(array_merge(json_decode($json, true),["reason"=>$reason]));
+		 	break;
+		}
+	}
+	
 
 	/*if($combined['payerAuthValidateReply_reasonCode'] ==="100"){
 		$res = $req->authorizeOnline($recd_data);
@@ -40,7 +54,7 @@ if(isset($jsonData)){
 	}*/
 
 
-	//echo $mess;
+	echo $json;
 }
 
 /*session_unset();
