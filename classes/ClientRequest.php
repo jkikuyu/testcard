@@ -1,11 +1,11 @@
 <?php
-/**
-** @author :jude
-**/
 
 namespace IpaySecure;
 require_once('vendor/autoload.php');
 require_once('classes/Utils.php');
+/**
+** @author :jude
+**/
 
 class ClientRequest{
 	private $referenceID;
@@ -46,10 +46,16 @@ class ClientRequest{
 
 	public function payerAuthValidateService($cardDetails){
 		$this->request = array();
+		echo "begin validation .....";
+		//$this->request['payerAuthEnrollService_run'] = 'true';
 
 		$this->request['payerAuthValidateService_authenticationTransactionID'] = $cardDetails->Payment->ProcessorTransactionId;
-		$this->request['payerAuthValidateService_run'] = 'true';
 		$this->request['ccAuthService_run'] = 'true';
+		$this->request['ccCaptureService_run'] = 'true';
+		$this->request['payerAuthValidateService_run'] = 'true';
+	//	$this->request['afsService_run'] = 'true';
+	//	$this->request['ccAuthService_xid'] = $cardDetails->xid;
+		//$this->request['ccAuthService_cavv'] = $ardDetails->cavv;
 		$this->request['vc_orderID'] = $cardDetails->OrderDetails->OrderNumber;
 
 		$this->request['card_expirationMonth'] = $cardDetails->Account->ExpirationMonth;
@@ -70,12 +76,33 @@ class ClientRequest{
 
 		$res = self::makeRequest($cardDetails);
 
+
 		return $res;
+	}
+	public function advanceFraudScreenService($cardDetails){
+		$this->request['afsService_run'] = 'true';
+
+		$this->request['card_expirationMonth'] = $cardDetails->Account->ExpirationMonth;
+		$this->request['card_expirationYear'] = $cardDetails->Account->ExpirationYear;
+		$this->request['card_cardType']=  $cardDetails->cardType;
+		$this->request['card_accountNumber'] = $cardDetails->Account->AccountNumber;
+		$this->request['shipTo_firstName'] = $cardDetails->Consumer->BillingAddress->FirstName;
+		$this->request['shipTo_lastName']  = $cardDetails->Consumer->BillingAddress->LastName;
+		$this->request['shipTo_email'] = $cardDetails->Consumer->Email1;
+		$this->request['shipTo_street1']   = $cardDetails->Consumer->BillingAddress->Address1;
+		$this->request['shipTo_country'] = $cardDetails->Consumer->BillingAddress->CountryCode;
+
+		$this->request['shipTo_city'] 	=  $cardDetails->Consumer->BillingAddress->City;
+		$res = self::makeRequest($cardDetails);
+
+	return $res;
+
 	}
 	public function authorizeOnline($cardDetails){
 		$this->request = array();
 		$this->request['paymentSolution']=$this->paymentSolution;
 		$this->request['vc_orderID'] = $cardDetails->OrderDetails->OrderNumber;
+		$this->request['ccAuthService_run'] = 'true';
 		$res = self::makeRequest($cardDetails);
 
 	return $res;

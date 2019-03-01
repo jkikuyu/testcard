@@ -36,7 +36,17 @@ if(isset($jsonData)){
 		 	break;
 		}
 	}
-	
+	if($combined['payerAuthValidateReply_reasonCode'] ==="100"){
+		$res = $req->advanceFraudScreenService($recd_data);
+		preg_match_all("/ ([^:=]+) [:=]+ ([^\\n]+) /x",  $res, $p);
+		$keys = array_map('trim',$p[1]);
+		$values = array_map('trim',$p[2]);
+		$combined = array_combine($keys, $values);
+		$fjson = json_encode($combined);
+		$json = json_encode(array_merge(json_decode($json, true),json_decode($fjson, true)));
+
+	}
+
 
 	/*if($combined['payerAuthValidateReply_reasonCode'] ==="100"){
 		$res = $req->authorizeOnline($recd_data);
