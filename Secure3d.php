@@ -43,31 +43,31 @@
 	if(!isset($jsonData) || empty($jsonData)){
 		//sample data
 		$jsonData = '{
-			"cardType":"002",
+			"cardType":"001",
 			"street":"Sifa Towers, Lenana Rd",
 			"OrderDetails":{
 				"OrderNumber":"'.$orderNo. '",
 				"OrderDescription":"test Description", 
-				"Amount":"300",
+				"Amount":"100",
 				"CurrencyCode":"KES",
 				"OrderChannel":"M",
 				"TransactionId":"'.uniqid().'"
 			},
 			"Consumer":{
-				"Email1":"abc@test.com",
+				"Email1":"abc@review.com",
 				"BillingAddress":{
-					"FirstName":"John",
+					"FirstName":"William",
 					"MiddleName":"C",
-					"LastName":"Doe",
-					"Address1":"sdfdfdfddfddf",
+					"LastName":"Paul",
+					"Address1":"Argwings Kodhek Rd",
 					"City":"Nairobi",
 					"CountryCode":"KE",
-					"Phone1":"3234455"
+					"Phone1":"722644550"
 				}
 			},
 
 			"Account":{
-				"AccountNumber":"5200000000000007",
+				"AccountNumber":"4000000000000002",
 				"CardCode":"366",
 				"ExpirationMonth":"12",
 				"ExpirationYear":"2019"
