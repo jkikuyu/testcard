@@ -26,6 +26,7 @@ if(isset($jsonData)){
 		echo $json;
 	}
 	else{
+		echo "do authorize";
 		$json = json_encode($combined);
 		echo $json;
  

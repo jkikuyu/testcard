@@ -38,6 +38,14 @@ class ClientRequest{
 		$this->request['card_expirationYear'] = $cardDetails->Account->ExpirationYear;
 		$this->request['card_cardType']=  $cardDetails->cardType;
 		$this->request['card_accountNumber'] = $cardDetails->Account->AccountNumber;
+		$this->request['payerAuthEnrollService_MCC'] = "Test";
+		$this->request['payerAuthEnrollService_productCode'] = "DIG";
+		$this->request['payerAuthEnrollService_mobilePhone'] = "254773427047";
+		$this->request['payerAuthEnrollService_overridePaymentMethod'] = "DR";
+
+
+
+
 
 
 		$res = self::makeRequest($cardDetails);
@@ -53,7 +61,7 @@ class ClientRequest{
 		$this->request['ccAuthService_run'] = 'true';
 		$this->request['ccCaptureService_run'] = 'true';
 		$this->request['payerAuthValidateService_run'] = 'true';
-	//	$this->request['afsService_run'] = 'true';
+		$this->request['afsService_run'] = 'true';
 	//	$this->request['ccAuthService_xid'] = $cardDetails->xid;
 		//$this->request['ccAuthService_cavv'] = $ardDetails->cavv;
 		$this->request['vc_orderID'] = $cardDetails->OrderDetails->OrderNumber;
@@ -67,8 +75,10 @@ class ClientRequest{
 		$this->request['billTo_email'] = $cardDetails->Consumer->Email1;
 		$this->request['billTo_street1']   = $cardDetails->Consumer->BillingAddress->Address1;
 		$this->request['billTo_country'] = $cardDetails->Consumer->BillingAddress->CountryCode;
-
 		$this->request['billTo_city'] 	=  $cardDetails->Consumer->BillingAddress->City;
+		$this->request['item_0_unitPrice'] = $cardDetails->OrderDetails->Amount/100;
+		$this->request['invoiceHeader_merchantDescriptor'] = "testing dynamic descriptor";
+		$this->request['item_0_unitQuantity'] = '1';
 		if($cardDetails->cardType=="002"){
 			$this->request['card_cardType'] = $cardDetails->cardType;
 		}
@@ -82,25 +92,27 @@ class ClientRequest{
 	public function advanceFraudScreenService($cardDetails){
 		$this->request['afsService_run'] = 'true';
 
-		$this->request['card_expirationMonth'] = $cardDetails->Account->ExpirationMonth;
+/*		$this->request['card_expirationMonth'] = $cardDetails->Account->ExpirationMonth;
 		$this->request['card_expirationYear'] = $cardDetails->Account->ExpirationYear;
 		$this->request['card_cardType']=  $cardDetails->cardType;
-		$this->request['card_accountNumber'] = $cardDetails->Account->AccountNumber;
+		$this->request['vc_orderID'] = $cardDetails->OrderDetails->OrderNumber;
+*/
 		$this->request['shipTo_firstName'] = $cardDetails->Consumer->BillingAddress->FirstName;
 		$this->request['shipTo_lastName']  = $cardDetails->Consumer->BillingAddress->LastName;
 		$this->request['shipTo_email'] = $cardDetails->Consumer->Email1;
 		$this->request['shipTo_street1']   = $cardDetails->Consumer->BillingAddress->Address1;
 		$this->request['shipTo_country'] = $cardDetails->Consumer->BillingAddress->CountryCode;
-
 		$this->request['shipTo_city'] 	=  $cardDetails->Consumer->BillingAddress->City;
+
 		$res = self::makeRequest($cardDetails);
 
 	return $res;
 
 	}
 	public function authorizeOnline($cardDetails){
+		echo "testing authorization";
 		$this->request = array();
-		$this->request['paymentSolution']=$this->paymentSolution;
+		$this->request['PAYMENTSOLUTION']=$this->paymentSolution;
 		$this->request['vc_orderID'] = $cardDetails->OrderDetails->OrderNumber;
 		$this->request['ccAuthService_run'] = 'true';
 		$res = self::makeRequest($cardDetails);
@@ -112,11 +124,24 @@ class ClientRequest{
 		self::getCurrency($cardDetails);
 
 		$options = [$this->merchantId,$this->transactionkey];
+		$this->request['card_expirationMonth'] = $cardDetails->Account->ExpirationMonth;
+		$this->request['card_expirationYear'] = $cardDetails->Account->ExpirationYear;
+		$this->request['card_cardType']=  $cardDetails->cardType;
+		$this->request['vc_orderID'] = $cardDetails->OrderDetails->OrderNumber;
 
 		$this->request['purchaseTotals_grandTotalAmount']=$cardDetails->OrderDetails->Amount/100;
 		$this->request['purchaseTotals_currency'] =$cardDetails->OrderDetails->CurrencyCode;
 		$this->request['merchantID'] = $this->merchantId;
-		$this->request['merchantReferenceCode'] = $cardDetails->OrderDetails->OrderNumber;		
+		$this->request['merchantReferenceCode'] = $cardDetails->OrderDetails->OrderNumber;	
+		$this->request['billTo_street1'] = $cardDetails->Consumer->BillingAddress->Address1;
+		$this->request['billTo_city'] = $cardDetails->Consumer->BillingAddress->City;
+		$this->request['billTo_country'] = $cardDetails->Consumer->BillingAddress->CountryCode;
+		$this->request['billTo_email'] =  $cardDetails->Consumer->Email1;
+		$this->request['billTo_firstName'] = $cardDetails->Consumer->BillingAddress->FirstName;
+
+		$this->request['billTo_lastName'] =  $cardDetails->Consumer->BillingAddress->LastName;
+		$this->request['card_accountNumber'] = $cardDetails->Account->AccountNumber;
+
 		$client = new \CybsNameValuePairClient($options);
 		 $jsonStr= json_encode($cardDetails);
 		Utils::infoMsg($jsonStr);

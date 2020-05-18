@@ -54,11 +54,11 @@
 				"TransactionId":"'.uniqid().'"
 			},
 			"Consumer":{
-				"Email1":"abc@review.com",
+				"Email1":"abc@accept.com",
 				"BillingAddress":{
-					"FirstName":"William",
+					"FirstName":"Alex",
 					"MiddleName":"C",
-					"LastName":"Paul",
+					"LastName":"Peterson",
 					"Address1":"Argwings Kodhek Rd",
 					"City":"Nairobi",
 					"CountryCode":"KE",
@@ -67,10 +67,10 @@
 			},
 
 			"Account":{
-				"AccountNumber":"4000000000000002",
+				"AccountNumber":"4000000000000028",
 				"CardCode":"366",
 				"ExpirationMonth":"12",
-				"ExpirationYear":"2019"
+				"ExpirationYear":"2021"
 			}
 
 
@@ -90,7 +90,7 @@
 */
 		}
 	$recd_data = json_decode($jsonData);
-	$referenceId = uniqid();
+	$referenceId = 1;
 	$aref = ["referenceId"=>$referenceId];
 	$jsonData = json_encode(array_merge(json_decode($jsonData,true),$aref));
 	$xid = "";
@@ -138,6 +138,7 @@
 		});	
 		Cardinal.on("payments.validated", function (vcard, jwt) {
 				console.log("here at payment validated............");
+				console.log("jwt:  "+jwt);
 		//Listen for Events
 	    switch(vcard.ErrorNumber){
 
