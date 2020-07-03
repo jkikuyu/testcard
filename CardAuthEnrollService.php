@@ -20,19 +20,28 @@ if(isset($jsonData)){
 	preg_match_all("/ ([^:=]+) [:=]+ ([^\\n]+) /x",  $res, $p);
 	$keys = array_map('trim',$p[1]);
 	$values = array_map('trim',$p[2]);
-	$combined = array_combine($keys, $values);	
-	if ($combined['payerAuthEnrollReply_reasonCode']==="475"){ 
-		$json = json_encode($combined);
-		echo $json;
-	}
-	else{
-		echo "do authorize";
-		$json = json_encode($combined);
-		echo $json;
- 
-		$req->authorizeOnline($recd_data);
-		echo $json;
-	}
+	$combined = array_combine($keys, $values);
+    $json = json_encode($combined);
+
+    switch($combined['payerAuthEnrollReply_reasonCode']){
+            
+        case "475": 
+            $json = json_encode($combined);
+            echo $json;
+            break;
+        case "100":
+            $json = json_encode($combined);
+            echo $json;
+
+            $req->authorizeOnline($recd_data, $combined);
+            echo $json;
+            break;
+        default:
+            echo $json;
+
+    
+    }
+
 
 }
 

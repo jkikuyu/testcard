@@ -43,39 +43,37 @@
 	if(!isset($jsonData) || empty($jsonData)){
 		//sample data
 		$jsonData = '{
-			"cardType":"001",
-			"street":"Sifa Towers, Lenana Rd",
-			"OrderDetails":{
-				"OrderNumber":"'.$orderNo. '",
-				"OrderDescription":"test Description", 
-				"Amount":"100",
-				"CurrencyCode":"KES",
-				"OrderChannel":"M",
-				"TransactionId":"'.uniqid().'"
-			},
-			"Consumer":{
-				"Email1":"abc@accept.com",
-				"BillingAddress":{
-					"FirstName":"Alex",
-					"MiddleName":"C",
-					"LastName":"Peterson",
-					"Address1":"Argwings Kodhek Rd",
-					"City":"Nairobi",
-					"CountryCode":"KE",
-					"Phone1":"722644550"
-				}
-			},
-
-			"Account":{
-				"AccountNumber":"4000000000000028",
-				"CardCode":"366",
-				"ExpirationMonth":"12",
-				"ExpirationYear":"2021"
+		"cardType":"001",
+		"street":"Sifa Towers, Lenana Rd",
+		"OrderDetails":{
+			"OrderNumber":"'.uniqid(). '",
+			"OrderDescription":"test Description", 
+			"Amount":"100",
+			"CurrencyCode":"KES",
+			"OrderChannel":"M",
+			"TransactionId":"'.uniqid().'"
+		},
+		"Consumer":{
+			"Email1":"alexc@gmail.com",
+			"BillingAddress":{
+				"FirstName":"Alex",
+				"MiddleName":"c",
+				"LastName":"Peterson",
+				"Address1":"Argwings Kodhek Rd",
+				"City":"Nairobi",
+				"CountryCode":"KE",
+				"Phone1":"254722644550"
 			}
+		},
 
+		"Account":{
+			"AccountNumber":"4000000000000002",
+			"CardCode":"366",
+			"ExpirationMonth":"12",
+			"ExpirationYear":"2020"
+		}
 
-
-		}';
+	}';
 /*				"Consumer":{
 				"Email1":"abc@test.com",
 				"BillingAddress":{
@@ -90,7 +88,7 @@
 */
 		}
 	$recd_data = json_decode($jsonData);
-	$referenceId = 1;
+	$referenceId = substr(hexdec(uniqid()),0,12);
 	$aref = ["referenceId"=>$referenceId];
 	$jsonData = json_encode(array_merge(json_decode($jsonData,true),$aref));
 	$xid = "";
@@ -130,9 +128,8 @@
 		})
 		.then(r =>  r.json())
 		.then(data => 	bin_process(data))
-		.catch(error => console.log(error));
-
-		Cardinal.on('payments.setupComplete', function(setupCompleteData){
+        .catch(error => console.log(JSON.stringify(error)));		
+        Cardinal.on('payments.setupComplete', function(setupCompleteData){
 			console.log(JSON.stringify(setupCompleteData));
 
 		});	
@@ -140,6 +137,7 @@
 				console.log("here at payment validated............");
 				console.log("jwt:  "+jwt);
 		//Listen for Events
+		console.log(vcard);
 	    switch(vcard.ErrorNumber){
 
 	      case 0:
@@ -187,7 +185,9 @@
 
 				
 		function bin_process(data){
+            console.log(data);
 			transactionId = data.payerAuthEnrollReply_xid;
+            //requestID = data.requestID;
 			Cardinal.trigger("bin.process", purchase.Account.AccountNumber)
 				.then(function(results){
 

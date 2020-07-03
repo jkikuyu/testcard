@@ -73,5 +73,19 @@
             return $retval;    
         }
 	}
+/*
+    $jsonData = file_get_contents('php://input');
+    if(isset($jsonData)){
+        //echo $jsonData;
+        $recd_data = json_decode($jsonData);
+
+        $claimRequest = new JWTUtil();
+        $jwt = $claimRequest->generateJwt($recd_data->OrderDetails->TransactionId, $recd_data->OrderDetails, $referenceId);
+        echo $jwt;
+        
+    }
+*/
+    
+
 ?>
 
